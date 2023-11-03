@@ -23,9 +23,22 @@ function ToastProvider({ children }) {
     [toasts]
   );
 
+  const dismissAllToasts = React.useCallback((event) => {
+    if (event.code === "Escape") {
+      setToasts([]);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    window.addEventListener("keydown", dismissAllToasts);
+    return () => {
+      window.removeEventListener("keydown", dismissAllToasts);
+    };
+  }, [dismissAllToasts]);
+
   const toastsContext = React.useMemo(() => {
-    return { toasts, addToast, dismissToast };
-  }, [addToast, dismissToast, toasts]);
+    return { toasts, addToast, dismissToast, dismissAllToasts };
+  }, [toasts, addToast, dismissToast, dismissAllToasts]);
 
   return (
     <ToastContext.Provider value={toastsContext}>
