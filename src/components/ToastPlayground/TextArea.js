@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./ToastPlayground.module.css";
 
-export function TextArea({ value, handleValueChange, id, ...delegated }) {
+function TextArea({ value, handleValueChange, id, ...delegated }, ref) {
   const computedId = React.useId();
   const textAreaId = id ?? computedId;
   return (
@@ -16,6 +16,7 @@ export function TextArea({ value, handleValueChange, id, ...delegated }) {
       <div className={styles.inputWrapper}>
         <textarea
           {...delegated}
+          ref={ref}
           id={textAreaId}
           className={styles.messageInput}
           value={value}
@@ -25,3 +26,5 @@ export function TextArea({ value, handleValueChange, id, ...delegated }) {
     </>
   );
 }
+
+export default React.forwardRef(TextArea);

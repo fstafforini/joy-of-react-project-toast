@@ -3,19 +3,29 @@ import React from "react";
 import Button from "../Button";
 
 import styles from "./ToastPlayground.module.css";
-import { TextArea } from "./TextArea";
-import { RadioButtons } from "./RadioButtons";
-import Toast from "../Toast";
+import TextArea from "./TextArea";
+import RadioButtons from "./RadioButtons";
+import ToastShelf from "../ToastShelf";
 
 const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 
 function ToastPlayground() {
   const [message, setMessage] = React.useState("");
   const [variant, setVariant] = React.useState(VARIANT_OPTIONS[0]);
-  const [isPopped, setIsPopped] = React.useState(false);
+  const [toasts, setToasts] = React.useState([]);
+  const textAreaRef = React.useRef();
 
-  function handleSendMessage() {
-    setIsPopped(true);
+  function handlePopToast(event) {
+    event.preventDefault();
+    const id = `${variant}-${message}-${Math.random()}`;
+    setToasts([...toasts, { id, message, variant }]);
+    setMessage("");
+    setVariant(VARIANT_OPTIONS[0]);
+    textAreaRef.current?.focus();
+  }
+
+  function handleDismissToast(dismissedToastId) {
+    setToasts(toasts.filter((toast) => toast.id !== dismissedToastId));
   }
 
   return (
@@ -25,17 +35,12 @@ function ToastPlayground() {
         <h1>Toast Playground</h1>
       </header>
 
-      {isPopped && (
-        <Toast
-          variant={variant}
-          message={message}
-          handleClose={() => setIsPopped(false)}
-        />
-      )}
+      <ToastShelf toasts={toasts} handleDismissToast={handleDismissToast} />
 
-      <div className={styles.controlsWrapper}>
+      <form className={styles.controlsWrapper} onSubmit={handlePopToast}>
         <div className={styles.row}>
           <TextArea
+            ref={textAreaRef}
             value={message}
             handleValueChange={(event) => setMessage(event.target.value)}
           />
@@ -44,7 +49,7 @@ function ToastPlayground() {
         <div className={styles.row}>
           <div className={styles.label}>Variant</div>
           <RadioButtons
-            name={variant}
+            name="variant"
             values={VARIANT_OPTIONS}
             currentValue={variant}
             handleValueChange={(event) => {
@@ -56,10 +61,10 @@ function ToastPlayground() {
         <div className={styles.row}>
           <div className={styles.label} />
           <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
-            <Button onClick={handleSendMessage}>Pop Toast!</Button>
+            <Button>Pop Toast!</Button>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

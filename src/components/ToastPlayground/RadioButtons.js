@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./ToastPlayground.module.css";
 
-export function RadioButtons({
+function RadioButtons({
   values,
   currentValue,
   handleValueChange,
@@ -32,3 +32,5 @@ export function RadioButtons({
     </div>
   );
 }
+
+export default RadioButtons;
