@@ -5,16 +5,17 @@ import Button from "../Button";
 import styles from "./ToastPlayground.module.css";
 import { TextArea } from "./TextArea";
 import { RadioButtons } from "./RadioButtons";
+import Toast from "../Toast";
 
 const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 
 function ToastPlayground() {
   const [message, setMessage] = React.useState("");
   const [variant, setVariant] = React.useState(VARIANT_OPTIONS[0]);
+  const [isPopped, setIsPopped] = React.useState(false);
 
   function handleSendMessage() {
-    setMessage("");
-    setVariant(VARIANT_OPTIONS[0]);
+    setIsPopped(true);
   }
 
   return (
@@ -23,6 +24,14 @@ function ToastPlayground() {
         <img alt="Cute toast mascot" src="/toast.png" />
         <h1>Toast Playground</h1>
       </header>
+
+      {isPopped && (
+        <Toast
+          variant={variant}
+          message={message}
+          handleClose={() => setIsPopped(false)}
+        />
+      )}
 
       <div className={styles.controlsWrapper}>
         <div className={styles.row}>
